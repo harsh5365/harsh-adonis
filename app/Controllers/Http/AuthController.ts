@@ -43,4 +43,23 @@ export default class AuthController {
 			},
 		})
 	}
+
+  public async redirectToGithub({request, response, ally}: HttpContextContract) {
+    const { code } = request.all()
+    const user = await ally.use('github').redirect(code)
+    return response.json({
+      data: {
+        user,
+      },
+    })
+  }
+
+  public async handleGithubCallback({response, ally}: HttpContextContract) {
+    const user = await ally.use('github').user()
+    return response.json({
+      data: {
+        user,
+      },
+    })
+  }
 }

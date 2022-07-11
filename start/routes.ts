@@ -27,6 +27,10 @@ Route.get('/', async () => {
 Route.post('/register', 'AuthController.register')
 Route.post('/login', 'AuthController.login')
 
+// github login
+Route.get('/github', 'AuthController.redirectToGithub')
+Route.get('/github/callback', 'AuthController.handleGithubCallback')
+
 Route.get('/twitter/redirect', async ({ ally }) => {
 	return ally.use('twitter').redirect()
 })
