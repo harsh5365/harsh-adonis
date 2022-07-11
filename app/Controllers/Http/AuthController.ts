@@ -14,7 +14,7 @@ export default class AuthController {
 				},
 			})
 		}
-		const isValid = await auth.use('api').attempt(email, password);
+		const isValid = await auth.use('api').attempt(email, password,{expiresIn: '1h'});
 		if (!isValid) {
 			return response.status(401).json({
 				error: {
