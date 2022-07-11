@@ -21,5 +21,44 @@
 import Route from '@ioc:Adonis/Core/Route'
 
 Route.get('/', async () => {
-  return { hello: 'world' }
+	return { hello: 'world' }
 })
+
+Route.post('/register', 'AuthController.register')
+Route.post('/login', 'AuthController.login')
+
+Route.get('/twitter/redirect', async ({ ally }) => {
+	return ally.use('twitter').redirect()
+})
+
+Route.get('/twitter/callback', async ({ ally }) => {
+	const twitter = ally.use('twitter')
+
+	/**
+	 * User has explicitly denied the login request
+	 */
+	if (twitter.accessDenied()) {
+		return 'Access was denied'
+	}
+
+	/**
+	 * Unable to verify the CSRF state
+	 */
+	if (twitter.stateMisMatch()) {
+		return 'Request expired. Retry again'
+	}
+
+	/**
+	 * There was an unknown error during the redirect
+	 */
+	if (twitter.hasError()) {
+		return twitter.getError()
+	}
+
+	/**
+	 * Finally, access the user
+	 */
+	const user = await twitter.user()
+	return user;
+})
+
